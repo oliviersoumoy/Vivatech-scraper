@@ -1,12 +1,14 @@
 name: Extraction Vivatech DGITM
 
-# Ce déclencheur permet d'ajouter un bouton pour lancer le script manuellement
 on:
   workflow_dispatch:
 
 jobs:
   scraping:
     runs-on: ubuntu-latest
+    env:
+      # Force l'utilisation des versions à jour de GitHub pour faire taire l'alerte
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - name: Récupération du code
@@ -15,7 +17,7 @@ jobs:
       - name: Installation de Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24' # Passage à la version 24
 
       - name: Installation de Playwright
         run: |
@@ -26,9 +28,12 @@ jobs:
       - name: Lancement de l'extraction
         run: node vivatech.js
 
-      - name: Mise à disposition du fichier Excel/CSV
+      - name: Mise à disposition des fichiers
         uses: actions/upload-artifact@v4
+        if: always() # Obligatoire pour récupérer la photo même si l'extraction échoue
         with:
           name: Vivatech_Resultats_DGITM
-          path: Vivatech_Exhibitors_DGITM.csv
+          path: |
+            Vivatech_Exhibitors_DGITM.csv
+            debug-vivatech.png*
           retention-days: 5
