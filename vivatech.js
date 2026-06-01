@@ -3,7 +3,7 @@ const fs = require('fs');
 
 (async () => {
     // Mode non-headless pour éviter les blocages de sécurité de Vivatech
-    const browser = await chromium.launch({ headless: false }); 
+    const browser = await chromium.launch({ headless: true }); 
     const context = await browser.newContext();
     const page = await context.newPage();
 
