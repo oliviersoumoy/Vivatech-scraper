@@ -1,0 +1,34 @@
+name: Extraction Vivatech DGITM
+
+# Ce déclencheur permet d'ajouter un bouton pour lancer le script manuellement
+on:
+  workflow_dispatch:
+
+jobs:
+  scraping:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupération du code
+        uses: actions/checkout@v4
+
+      - name: Installation de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Installation de Playwright
+        run: |
+          npm init -y
+          npm install playwright
+          npx playwright install --with-deps chromium
+
+      - name: Lancement de l'extraction
+        run: node vivatech.js
+
+      - name: Mise à disposition du fichier Excel/CSV
+        uses: actions/upload-artifact@v4
+        with:
+          name: Vivatech_Resultats_DGITM
+          path: Vivatech_Exhibitors_DGITM.csv
+          retention-days: 5
